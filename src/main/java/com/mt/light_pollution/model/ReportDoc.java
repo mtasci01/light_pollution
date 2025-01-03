@@ -12,9 +12,10 @@ import java.time.LocalDateTime;
 public class ReportDoc {
     @Id
     private ObjectId id;
-    private LocalDateTime createdAt;
-    private LocalDateTime fixedAt;
+    private Long createdAt;
+    private Long fixedAt;
     private Double lat;
     private Double lon;
+    private Integer severity;
     private String description;
 }
