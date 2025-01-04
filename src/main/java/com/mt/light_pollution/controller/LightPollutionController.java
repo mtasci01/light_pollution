@@ -3,10 +3,7 @@ import com.mt.light_pollution.model.ReportDTO;
 import com.mt.light_pollution.service.LightPollutionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,6 +27,18 @@ public class LightPollutionController {
 
     }
 
+    @DeleteMapping("/report")
+    public ResponseEntity<String> deleteReport(@RequestParam String id) {
+        lightService.deleteReport(id);
+        return ResponseEntity.ok("Deleted report id " + id);
 
+    }
+
+    @PutMapping("/fix_report")
+    public ResponseEntity<String> fixReport(@RequestParam String id) {
+        lightService.fixReport(id);
+        return ResponseEntity.ok("Fixed report id " + id);
+
+    }
 
 }

@@ -9,6 +9,9 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -56,6 +59,18 @@ public class LightPollutionService {
         }
 
         return dtos;
+    }
+
+    public void deleteReport(String id){
+        Query q = new Query();
+        q.addCriteria(Criteria.where("_id").is(id));
+        mongoTemplate.remove(q,ReportDoc.class);
+    }
+
+    public void fixReport(String id){
+        Query q = new Query();
+        q.addCriteria(Criteria.where("_id").is(id));
+        mongoTemplate.updateFirst(q,new Update().inc("fixedAt",Instant.now().toEpochMilli()),ReportDoc.class);
     }
 
 }

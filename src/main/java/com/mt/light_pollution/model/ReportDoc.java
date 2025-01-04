@@ -5,8 +5,6 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
-
 @Data
 @Document(collection = "reports")
 public class ReportDoc {
@@ -15,6 +13,8 @@ public class ReportDoc {
     private Long createdAt;
     private Long fixedAt;
     private Double lat;
+    private String city;
+    private String country;
     private Double lon;
     private Integer severity;
     private String description;
