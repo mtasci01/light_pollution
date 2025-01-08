@@ -1,5 +1,6 @@
 package com.mt.light_pollution.controller;
 import com.mt.light_pollution.model.ReportDTO;
+import com.mt.light_pollution.model.StatsDTO;
 import com.mt.light_pollution.service.LightPollutionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,11 @@ public class LightPollutionController {
         lightService.fixReport(id);
         return ResponseEntity.ok("Fixed report id " + id);
 
+    }
+
+    @GetMapping("/get_stats")
+    public ResponseEntity<StatsDTO> getStats() {
+        return ResponseEntity.ok(lightService.getStats());
     }
 
 }

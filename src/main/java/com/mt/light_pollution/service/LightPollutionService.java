@@ -2,9 +2,12 @@ package com.mt.light_pollution.service;
 
 import com.mt.light_pollution.model.ReportDTO;
 import com.mt.light_pollution.model.ReportDoc;
+import com.mt.light_pollution.model.StatsDTO;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -71,6 +75,36 @@ public class LightPollutionService {
         Query q = new Query();
         q.addCriteria(Criteria.where("_id").is(id));
         mongoTemplate.updateFirst(q,new Update().inc("fixedAt",Instant.now().toEpochMilli()),ReportDoc.class);
+    }
+
+    public StatsDTO getStats(){
+        StatsDTO statsDTO = new StatsDTO();
+
+        Bson matchStage = new Document("$match",
+                new Document("fixedAt",
+                        new Document("$ne",
+                                null)));
+
+        Bson groupStage = new Document("$group",
+                new Document("_id", "$country")
+                        .append("count",
+                                new Document("$sum", 1L)));
+         mongoTemplate.getDb().getCollection("reports").aggregate(
+                Arrays.asList(
+                        matchStage,
+                        groupStage
+                )).forEach(doc -> {
+                    statsDTO.getFixedMap().put(String.valueOf(doc.get("_id")), Integer.parseInt(String.valueOf(doc.get("count"))));
+                });
+
+        mongoTemplate.getDb().getCollection("reports").aggregate(
+                Arrays.asList(
+                        groupStage
+                )).forEach(doc -> {
+            statsDTO.getAllMap().put(String.valueOf(doc.get("_id")), Integer.parseInt(String.valueOf(doc.get("count"))));
+        });
+
+        return statsDTO;
     }
 
 }
